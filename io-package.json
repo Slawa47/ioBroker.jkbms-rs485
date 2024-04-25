@@ -44,15 +44,8 @@
             "uk": "jkbms-rs485",
             "zh-cn": "jkbms-rs485"
         },
-        "authors": [
-            "Slawa47 <1120-985@online.de>"
-        ],
-        "keywords": [
-            "ioBroker",
-            "template",
-            "Smart Home",
-            "home automation"
-        ],
+        "authors": ["Slawa47 <1120-985@online.de>"],
+        "keywords": ["ioBroker", "template", "Smart Home", "home automation"],
         "license": "MIT",
         "licenseInformation": {
             "type": "free",
@@ -86,7 +79,7 @@
         ]
     },
     "native": {
-        "ip": "192.168.0.160",
+        "ip": "192.168.0.27",
         "port": "502",
         "updateInterval": "5000"
     },

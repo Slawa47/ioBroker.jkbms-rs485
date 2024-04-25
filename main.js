@@ -1,13 +1,7 @@
 'use strict';
 
-/*
- * Created with @iobroker/create-adapter v2.6.3
- */
-
-// The adapter-core module gives you access to the core ioBroker functions
-// you need to create an adapter
 const utils = require('@iobroker/adapter-core');
-
+const net = require('net');
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
@@ -39,11 +33,6 @@ class JkbmsRs485 extends utils.Adapter {
         this.log.info('config Port: ' + this.config.port);
         this.log.info('config updateInterval: ' + this.config.updateInterval);
 
-        /*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
         await this.setObjectNotExistsAsync('testVariable', {
             type: 'state',
             common: {
@@ -55,18 +44,20 @@ class JkbmsRs485 extends utils.Adapter {
             },
             native: {},
         });
+        await this.setObjectNotExistsAsync('BMS_Antwort', {
+            type: 'state',
+            common: {
+                name: 'BMS_Antwort',
+                type: 'string',
+                role: 'state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
 
         // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
         this.subscribeStates('testVariable');
-        // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-        // this.subscribeStates('lights.*');
-        // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-        // this.subscribeStates('*');
-
-        /*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
         // the variable testVariable is set to true as command (ack=false)
         await this.setStateAsync('testVariable', true);
 
@@ -83,6 +74,40 @@ class JkbmsRs485 extends utils.Adapter {
 
         result = await this.checkGroupAsync('admin', 'admin');
         this.log.info('check group user admin group admin: ' + result);
+
+        //const host = '192.168.0.27';
+        //const port = 502;
+        const message = Buffer.from('01 10 16 20 00 01 02 00 00 D6 F1'.replace(/\s/g, ''), 'hex');
+        function sendData(socket) {
+            socket.write(message);
+        }
+
+        const client = new net.Socket();
+
+        client.connect(this.config.port, this.config.ip, () => {
+            console.log('Verbunden mit dem Server');
+
+            // Daten senden alle 10 Sekunden
+            setInterval(() => {
+                sendData(client);
+            }, this.config.updateInterval);
+        });
+
+        client.on('data', (data) => {
+            console.log('Antwort erhalten:', data.toString('hex'));
+            this.bmsAntwort = data.toString('hex');
+            if (this.bmsAntwort.length > 50) {
+                this.setStateAsync('BMS_Antwort', { val: data.toString('hex'), ack: true });
+            }
+        });
+
+        client.on('close', () => {
+            console.log('Verbindung geschlossen');
+        });
+
+        client.on('error', (err) => {
+            console.error('Fehler:', err);
+        });
     }
 
     /**
@@ -91,34 +116,11 @@ class JkbmsRs485 extends utils.Adapter {
      */
     onUnload(callback) {
         try {
-            // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            // clearInterval(interval1);
-
             callback();
         } catch (e) {
             callback();
         }
     }
-
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  * @param {string} id
-    //  * @param {ioBroker.Object | null | undefined} obj
-    //  */
-    // onObjectChange(id, obj) {
-    //     if (obj) {
-    //         // The object was changed
-    //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    //     } else {
-    //         // The object was deleted
-    //         this.log.info(`object ${id} deleted`);
-    //     }
-    // }
 
     /**
      * Is called if a subscribed state changes
@@ -134,25 +136,37 @@ class JkbmsRs485 extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
     }
-
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-    // /**
-    //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-    //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-    //  * @param {ioBroker.Message} obj
-    //  */
-    // onMessage(obj) {
-    //     if (typeof obj === 'object' && obj.message) {
-    //         if (obj.command === 'send') {
-    //             // e.g. send email or pushover or whatever
-    //             this.log.info('send command');
-
-    //             // Send response in callback if required
-    //             if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-    //         }
-    //     }
-    // }
 }
+
+const host = '192.168.0.27';
+const port = 502;
+const message = Buffer.from('01 10 16 20 00 01 02 00 00 D6 F1'.replace(/\s/g, ''), 'hex');
+function sendData(socket) {
+    socket.write(message);
+}
+
+const client = new net.Socket();
+
+client.connect(port, host, () => {
+    console.log('Verbunden mit dem Server');
+
+    // Daten senden alle 10 Sekunden
+    setInterval(() => {
+        sendData(client);
+    }, 10000);
+});
+
+client.on('data', (data) => {
+    console.log('Antwort erhalten:', data.toString('hex'));
+});
+
+client.on('close', () => {
+    console.log('Verbindung geschlossen');
+});
+
+client.on('error', (err) => {
+    console.error('Fehler:', err);
+});
 
 if (require.main !== module) {
     // Export the constructor in compact mode
