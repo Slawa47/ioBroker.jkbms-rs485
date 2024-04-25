@@ -1,0 +1,95 @@
+{
+    "common": {
+        "name": "jkbms-rs485",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "uk": "Початкова версія",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "JK-BMS RS485",
+        "titleLang": {
+            "en": "JK-BMS RS485",
+            "de": "JK-BMS RS485",
+            "ru": "JK-BMS RS485",
+            "pt": "JK-BMS RS485",
+            "nl": "JK-BMS RS485",
+            "fr": "JK-BMS RS485",
+            "it": "JK-BMS RS485",
+            "es": "JK-BMS RS485",
+            "pl": "JK-BMS RS485",
+            "uk": "JK-BMS RS485",
+            "zh-cn": "JK-BMS RS485"
+        },
+        "desc": {
+            "en": "jkbms-rs485",
+            "de": "jkbms-rs485",
+            "ru": "jkbms-rs485",
+            "pt": "jkbms-rs485",
+            "nl": "jkbms-rs485",
+            "fr": "jkbms-rs485",
+            "it": "jkbms-rs485",
+            "es": "jkbms-rs485",
+            "pl": "jkbms-rs485",
+            "uk": "jkbms-rs485",
+            "zh-cn": "jkbms-rs485"
+        },
+        "authors": [
+            "Slawa47 <1120-985@online.de>"
+        ],
+        "keywords": [
+            "ioBroker",
+            "template",
+            "Smart Home",
+            "home automation"
+        ],
+        "license": "MIT",
+        "licenseInformation": {
+            "type": "free",
+            "license": "MIT"
+        },
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "jkbms-rs485.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/Slawa47/ioBroker.jkbms-rs485/main/admin/jkbms-rs485.png",
+        "readme": "https://github.com/Slawa47/ioBroker.jkbms-rs485/blob/main/README.md",
+        "loglevel": "info",
+        "tier": 3,
+        "mode": "daemon",
+        "type": "protocols",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "poll",
+        "adminUI": {
+            "config": "json"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=3.3.22"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.1.13"
+            }
+        ]
+    },
+    "native": {
+        "ip": "192.168.0.160",
+        "port": "502",
+        "updateInterval": "5000"
+    },
+    "objects": [],
+    "instanceObjects": []
+}

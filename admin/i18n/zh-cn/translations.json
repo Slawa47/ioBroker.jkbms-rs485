@@ -1,0 +1,6 @@
+{
+    "jkbms-rs485 adapter settings": "jkbms-rs485 的适配器设置",
+    "ip": "IP地址",
+    "port": "港口",
+    "updateInterval": "更新间隔（以毫秒为单位）"
+}

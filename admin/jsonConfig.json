@@ -1,0 +1,21 @@
+{
+    "i18n": true,
+    "type": "panel",
+    "items": {
+        "ip": {
+            "type": "text",
+            "label": "IP address",
+            "newLine": true
+        },
+        "port": {
+            "type": "number",
+            "label": "Port",
+            "newLine": true
+        },
+        "updateInterval": {
+            "type": "number",
+            "label": "Update interval (in milliseconds)",
+            "newLine": true
+        }
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "jkbms-rs485 adapter settings": "Configurações do adaptador para jkbms-rs485",
+    "ip": "endereço de IP",
+    "port": "Porta",
+    "updateInterval": "Intervalo de atualização (em milissegundos)"
+}
